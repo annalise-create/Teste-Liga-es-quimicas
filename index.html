@@ -1,585 +1,640 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ligações Químicas - Imersão Futurista</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Font - Inter (Modern Sans-serif) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        /* Paleta de cores e configurações de estilo globais */
-        :root {
-            --bg-deep: #05010B; /* Preto Ultra Profundo com Roxo */
-            --bg-card: #0A0218; /* Cor de card mais suave */
-            --neon-purple: #B100FF; /* Roxo principal */
-            --neon-green: #A7FF1A; /* Verde principal */
-            --neon-blue: #00F0FF; /* Azul de destaque */
-            --text-light: #E0E0E0;
-        }
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Ligações Químicas - Imersão Futurista</title>
+   <!-- Tailwind CSS CDN -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <!-- Google Font - Inter (Modern Sans-serif) -->
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+   <style>
+       /* Paleta de cores e configurações de estilo globais */
+       :root {
+           --bg-deep: #05010B; /* Preto Ultra Profundo com Roxo */
+           --bg-card: #0A0218; /* Cor de card mais suave */
+           --neon-purple: #B100FF; /* Roxo principal */
+           --neon-green: #A7FF1A; /* Verde principal */
+           --neon-blue: #00F0FF; /* Azul de destaque */
+           --text-light: #E0E0E0;
+       }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-light);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
 
-        /* Títulos e Destaques Neon */
-        .neon-title {
-            text-shadow: 0 0 10px rgba(177, 0, 255, 0.7), 0 0 20px rgba(167, 255, 26, 0.5);
-            color: var(--text-light);
-        }
+       body {
+           font-family: 'Inter', sans-serif;
+           background-color: var(--bg-deep);
+           color: var(--text-light);
+           overflow-x: hidden;
+           scroll-behavior: smooth;
+       }
 
-        /* Estilo dos Cards Base */
-        .chem-card {
-            background-color: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(5px);
-        }
 
-        /* Estilo dos Cards (Cores Específicas) */
-        .ionic-theme { --neon-color: var(--neon-blue); }
-        .covalent-theme { --neon-color: var(--neon-green); }
-        .metallic-theme { --neon-color: var(--neon-purple); }
+       /* Títulos e Destaques Neon */
+       .neon-title {
+           text-shadow: 0 0 10px rgba(177, 0, 255, 0.7), 0 0 20px rgba(167, 255, 26, 0.5);
+           color: var(--text-light);
+       }
 
-        .chem-card:hover {
-            transform: scale(1.02);
-            border-color: var(--neon-color);
-            box-shadow: 0 0 15px var(--neon-color), 0 0 40px rgba(177, 0, 255, 0.2);
-        }
 
-        /* Efeito de Faísca/Pulso do Botão */
-        .spark-btn {
-            position: relative;
-            z-index: 10;
-            overflow: hidden;
-            border: 2px solid var(--neon-color);
-            color: var(--text-light);
-            background: rgba(0, 0, 0, 0.2);
-            text-shadow: 0 0 5px var(--neon-color);
-            transition: all 0.4s ease-in-out;
-        }
+       /* Estilo dos Cards Base */
+       .chem-card {
+           background-color: var(--bg-card);
+           border: 1px solid rgba(255, 255, 255, 0.1);
+           transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           backdrop-filter: blur(5px);
+       }
 
-        /* O "Pulso" Interior do Botão */
-        .spark-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: var(--neon-color);
-            border-radius: 50%;
-            opacity: 0;
-            transition: width 0.5s, height 0.5s, opacity 0.3s;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
 
-        .spark-btn:hover::before {
-            width: 250%;
-            height: 250%;
-            opacity: 0.8;
-            box-shadow: 0 0 30px var(--neon-color);
-        }
+       /* Estilo dos Cards (Cores Específicas) */
+       .ionic-theme { --neon-color: var(--neon-blue); }
+       .covalent-theme { --neon-color: var(--neon-green); }
+       .metallic-theme { --neon-color: var(--neon-purple); }
 
-        /* O Efeito de Texto no Hover */
-        .spark-btn:hover {
-            color: var(--bg-deep); /* Escurece o texto */
-            text-shadow: none;
-            box-shadow: 0 0 10px var(--neon-color);
-        }
 
-        /* Canvas de Fundo */
-        #particle-canvas {
-            position: fixed; /* Fundo fixo para melhor visual */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
+       .chem-card:hover {
+           transform: scale(1.02);
+           border-color: var(--neon-color);
+           box-shadow: 0 0 15px var(--neon-color), 0 0 40px rgba(177, 0, 255, 0.2);
+       }
 
-        /* FAQ Accordion Styling (Melhorado) */
-        .faq-item {
-            border: 1px solid rgba(177, 0, 255, 0.2);
-            box-shadow: 0 0 5px rgba(177, 0, 255, 0.3);
-        }
 
-        .faq-header {
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
+       /* Efeito de Faísca/Pulso do Botão */
+       .spark-btn {
+           position: relative;
+           z-index: 10;
+           overflow: hidden;
+           border: 2px solid var(--neon-color);
+           color: var(--text-light);
+           background: rgba(0, 0, 0, 0.2);
+           text-shadow: 0 0 5px var(--neon-color);
+           transition: all 0.4s ease-in-out;
+       }
 
-        .faq-header:hover {
-            background-color: rgba(177, 0, 255, 0.1);
-        }
 
-        .faq-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-        }
+       /* O "Pulso" Interior do Botão */
+       .spark-btn::before {
+           content: '';
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           width: 0;
+           height: 0;
+           background: var(--neon-color);
+           border-radius: 50%;
+           opacity: 0;
+           transition: width 0.5s, height 0.5s, opacity 0.3s;
+           transform: translate(-50%, -50%);
+           z-index: -1;
+       }
 
-        .faq-open .faq-content {
-            max-height: 500px;
-            padding-bottom: 1.5rem;
-            transition: max-height 0.7s ease-in, padding 0.7s ease-in;
-        }
 
-        .faq-open .faq-header .plus-icon {
-            transform: rotate(45deg);
-            color: var(--neon-green);
-            text-shadow: 0 0 5px var(--neon-green);
-        }
-        
-        .plus-icon {
-            transition: transform 0.3s, color 0.3s, text-shadow 0.3s;
-        }
-    </style>
+       .spark-btn:hover::before {
+           width: 250%;
+           height: 250%;
+           opacity: 0.8;
+           box-shadow: 0 0 30px var(--neon-color);
+       }
+
+
+       /* O Efeito de Texto no Hover */
+       .spark-btn:hover {
+           color: var(--bg-deep); /* Escurece o texto */
+           text-shadow: none;
+           box-shadow: 0 0 10px var(--neon-color);
+       }
+
+
+       /* Canvas de Fundo */
+       #particle-canvas {
+           position: fixed; /* Fundo fixo para melhor visual */
+           top: 0;
+           left: 0;
+           width: 100%;
+           height: 100%;
+           z-index: 0;
+           pointer-events: none;
+       }
+
+
+       /* FAQ Accordion Styling (Melhorado) */
+       .faq-item {
+           border: 1px solid rgba(177, 0, 255, 0.2);
+           box-shadow: 0 0 5px rgba(177, 0, 255, 0.3);
+       }
+
+
+       .faq-header {
+           cursor: pointer;
+           transition: background-color 0.3s, color 0.3s;
+       }
+
+
+       .faq-header:hover {
+           background-color: rgba(177, 0, 255, 0.1);
+       }
+
+
+       .faq-content {
+           max-height: 0;
+           overflow: hidden;
+           transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+       }
+
+
+       .faq-open .faq-content {
+           max-height: 500px;
+           padding-bottom: 1.5rem;
+           transition: max-height 0.7s ease-in, padding 0.7s ease-in;
+       }
+
+
+       .faq-open .faq-header .plus-icon {
+           transform: rotate(45deg);
+           color: var(--neon-green);
+           text-shadow: 0 0 5px var(--neon-green);
+       }
+      
+       .plus-icon {
+           transition: transform 0.3s, color 0.3s, text-shadow 0.3s;
+       }
+   </style>
 </head>
 <body class="min-h-screen">
 
-    <!-- Canvas para Partículas e Animações de Fundo -->
-    <canvas id="particle-canvas"></canvas>
 
-    <!-- Navbar Fixa -->
-    <nav class="sticky top-0 z-50 bg-black/70 backdrop-blur-md shadow-xl shadow-purple-900/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="#hero" class="text-3xl font-extrabold tracking-widest text-neon-green" style="text-shadow: 0 0 5px var(--neon-green);">CHEM.IO</a>
-                <div class="flex space-x-4">
-                    <a href="#intro" class="text-sm font-medium hover:text-neon-purple transition duration-300">Introdução</a>
-                    <a href="#ionic" class="text-sm font-medium hover:text-neon-blue transition duration-300">Iônica</a>
-                    <a href="#covalent" class="text-sm font-medium hover:text-neon-green transition duration-300">Covalente</a>
-                    <a href="#metallic" class="text-sm font-medium hover:text-neon-purple transition duration-300 hidden sm:block">Metálica</a>
-                    <a href="#faq" class="text-sm font-medium hover:text-white transition duration-300 hidden sm:block">FAQ</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+   <!-- Canvas para Partículas e Animações de Fundo -->
+   <canvas id="particle-canvas"></canvas>
 
-    <main class="relative z-10">
-        
-        <!-- 1. Hero Section -->
-        <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center text-center p-4 pt-16 overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            
-            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black mb-6 tracking-tight z-10 neon-title">
-                <span style="color:var(--neon-purple);">Ligações Químicas</span>
-                <span class="block text-4xl sm:text-6xl lg:text-7xl font-extrabold mt-4" style="color:var(--neon-green);">
-                    A Arquitetura da Matéria
-                </span>
-            </h1>
-            <p class="text-lg sm:text-xl lg:text-2xl mb-12 text-gray-400 z-10 max-w-4xl">
-                Explore a fundação molecular do universo através de uma interface futurista e imersiva. Entenda a Iônica, Covalente e Metálica.
-            </p>
-            
-            <div id="atom-container" class="w-72 h-72 sm:w-96 sm:h-96 my-8 z-10">
-                <!-- Átomo animado desenhado no Canvas -->
-            </div>
 
-            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 z-10">
-                <a href="#intro" class="spark-btn ionic-theme px-8 py-3 rounded-full text-lg font-semibold shadow-xl" style="--neon-color: var(--neon-blue);">
-                    Iniciar Análise >>
-                </a>
-            </div>
-        </section>
+   <!-- Navbar Fixa -->
+   <nav class="sticky top-0 z-50 bg-black/70 backdrop-blur-md shadow-xl shadow-purple-900/20">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div class="flex justify-between items-center h-16">
+               <a href="#hero" class="text-3xl font-extrabold tracking-widest text-neon-green" style="text-shadow: 0 0 5px var(--neon-green);">CHEM.IO</a>
+               <div class="flex space-x-4">
+                   <a href="#intro" class="text-sm font-medium hover:text-neon-purple transition duration-300">Introdução</a>
+                   <a href="#ionic" class="text-sm font-medium hover:text-neon-blue transition duration-300">Iônica</a>
+                   <a href="#covalent" class="text-sm font-medium hover:text-neon-green transition duration-300">Covalente</a>
+                   <a href="#metallic" class="text-sm font-medium hover:text-neon-purple transition duration-300 hidden sm:block">Metálica</a>
+                   <a href="#faq" class="text-sm font-medium hover:text-white transition duration-300 hidden sm:block">FAQ</a>
+               </div>
+           </div>
+       </div>
+   </nav>
 
-        <!-- 2. Introdução: O Motor da Estabilidade -->
-        <section id="intro" class="py-20 px-4 sm:px-8 lg:px-16 bg-gray-900/50 shadow-inner shadow-purple-900/30">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl font-bold mb-6 text-center" style="color:var(--neon-green); text-shadow: 0 0 8px rgba(167, 255, 26, 0.4);">A Regra do Octeto</h2>
-                <p class="text-center text-xl mb-12 max-w-4xl mx-auto text-gray-300">
-                    Todos os átomos buscam atingir a estabilidade de um gás nobre, completando sua última camada de valência com oito elétrons (a Regra do Octeto). As ligações químicas são o "mecanismo de troca" para atingir essa configuração.
-                </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <div class="p-6 rounded-xl border border-neon-blue/30 bg-black/20">
-                        <span class="text-5xl block mb-3 text-neon-blue" style="text-shadow: 0 0 10px var(--neon-blue);">+</span>
-                        <h3 class="text-xl font-semibold text-white">Transferência Total</h3>
-                        <p class="text-gray-400 text-sm">Cria íons e atração eletrostática.</p>
-                    </div>
-                    <div class="p-6 rounded-xl border border-neon-green/30 bg-black/20">
-                        <span class="text-5xl block mb-3 text-neon-green" style="text-shadow: 0 0 10px var(--neon-green);">↔</span>
-                        <h3 class="text-xl font-semibold text-white">Compartilhamento Mútuo</h3>
-                        <p class="text-gray-400 text-sm">Cria moléculas com órbitas fundidas.</p>
-                    </div>
-                    <div class="p-6 rounded-xl border border-neon-purple/30 bg-black/20">
-                        <span class="text-5xl block mb-3 text-neon-purple" style="text-shadow: 0 0 10px var(--neon-purple);">~</span>
-                        <h3 class="text-xl font-semibold text-white">Nuvem Deslocalizada</h3>
-                        <p class="text-gray-400 text-sm">Cria um "mar" eletrônico.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 3. Ligações Específicas -->
-        <section class="py-20 px-4 sm:px-8 lg:px-16 space-y-20">
-            <div class="max-w-6xl mx-auto">
+   <main class="relative z-10">
+      
+       <!-- 1. Hero Section -->
+       <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center text-center p-4 pt-16 overflow-hidden">
+           <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          
+           <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black mb-6 tracking-tight z-10 neon-title">
+               <span style="color:var(--neon-purple);">Ligações Químicas</span>
+               <span class="block text-4xl sm:text-6xl lg:text-7xl font-extrabold mt-4" style="color:var(--neon-green);">
+                   A Arquitetura da Matéria
+               </span>
+           </h1>
+           <p class="text-lg sm:text-xl lg:text-2xl mb-12 text-gray-400 z-10 max-w-4xl">
+               Explore a fundação molecular do universo através de uma interface futurista e imersiva. Entenda a Iônica, Covalente e Metálica.
+           </p>
+          
+           <div id="atom-container" class="w-72 h-72 sm:w-96 sm:h-96 my-8 z-10">
+               <!-- Átomo animado desenhado no Canvas -->
+           </div>
 
-                <!-- Ligação Iônica -->
-                <div id="ionic" class="chem-card ionic-theme p-8 rounded-2xl flex flex-col lg:flex-row items-center gap-8">
-                    <div class="lg:w-1/2">
-                        <h3 class="text-4xl font-extrabold mb-4 text-neon-blue" style="text-shadow: 0 0 10px var(--neon-blue);">01. LIGAÇÃO IÔNICA (Eletrovalente)</h3>
-                        <p class="text-gray-300 mb-6 text-lg">
-                            É o resultado da grande diferença de eletronegatividade entre um metal (baixa Eletronegatividade) e um não-metal (alta Eletronegatividade). O elétron é **completamente transferido**, criando um Cátion (+) e um Ânion (-), que se atraem fortemente por forças eletrostáticas.
-                        </p>
-                        <p class="text-sm font-mono text-neon-blue/80 bg-black/30 p-2 rounded-lg inline-block">
-                            Exemplos: Haletos, Óxidos Metálicos (NaCl, CaF₂, MgO)
-                        </p>
-                        <button class="spark-btn ionic-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-blue);">
-                            Ver Propriedades Sólidas
-                        </button>
-                    </div>
-                    <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
-                        <!-- Placeholder Visual: Transferência de elétron -->
+
+           <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 z-10">
+               <a href="#intro" class="spark-btn ionic-theme px-8 py-3 rounded-full text-lg font-semibold shadow-xl" style="--neon-color: var(--neon-blue);">
+                   Iniciar Análise >>
+               </a>
+           </div>
+       </section>
+
+
+       <!-- 2. Introdução: O Motor da Estabilidade -->
+       <section id="intro" class="py-20 px-4 sm:px-8 lg:px-16 bg-gray-900/50 shadow-inner shadow-purple-900/30">
+           <div class="max-w-6xl mx-auto">
+               <h2 class="text-4xl font-bold mb-6 text-center" style="color:var(--neon-green); text-shadow: 0 0 8px rgba(167, 255, 26, 0.4);">A Regra do Octeto</h2>
+               <p class="text-center text-xl mb-12 max-w-4xl mx-auto text-gray-300">
+                   Todos os átomos buscam atingir a estabilidade de um gás nobre, completando sua última camada de valência com oito elétrons (a Regra do Octeto). As ligações químicas são o "mecanismo de troca" para atingir essa configuração.
+               </p>
+              
+               <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                   <div class="p-6 rounded-xl border border-neon-blue/30 bg-black/20">
+                       <span class="text-5xl block mb-3 text-neon-blue" style="text-shadow: 0 0 10px var(--neon-blue);">+</span>
+                       <h3 class="text-xl font-semibold text-white">Transferência Total</h3>
+                       <p class="text-gray-400 text-sm">Cria íons e atração eletrostática.</p>
+                   </div>
+                   <div class="p-6 rounded-xl border border-neon-green/30 bg-black/20">
+                       <span class="text-5xl block mb-3 text-neon-green" style="text-shadow: 0 0 10px var(--neon-green);">↔</span>
+                       <h3 class="text-xl font-semibold text-white">Compartilhamento Mútuo</h3>
+                       <p class="text-gray-400 text-sm">Cria moléculas com órbitas fundidas.</p>
+                   </div>
+                   <div class="p-6 rounded-xl border border-neon-purple/30 bg-black/20">
+                       <span class="text-5xl block mb-3 text-neon-purple" style="text-shadow: 0 0 10px var(--neon-purple);">~</span>
+                       <h3 class="text-xl font-semibold text-white">Nuvem Deslocalizada</h3>
+                       <p class="text-gray-400 text-sm">Cria um "mar" eletrônico.</p>
+                   </div>
+               </div>
+           </div>
+       </section>
+
+
+       <!-- 3. Ligações Específicas -->
+       <section class="py-20 px-4 sm:px-8 lg:px-16 space-y-20">
+           <div class="max-w-6xl mx-auto">
+
+
+               <!-- Ligação Iônica -->
+               <div id="ionic" class="chem-card ionic-theme p-8 rounded-2xl flex flex-col lg:flex-row items-center gap-8">
+                   <div class="lg:w-1/2">
+                       <h3 class="text-4xl font-extrabold mb-4 text-neon-blue" style="text-shadow: 0 0 10px var(--neon-blue);">01. LIGAÇÃO IÔNICA (Eletrovalente)</h3>
+                       <p class="text-gray-300 mb-6 text-lg">
+                           É o resultado da grande diferença de eletronegatividade entre um metal (baixa Eletronegatividade) e um não-metal (alta Eletronegatividade). O elétron é **completamente transferido**, criando um Cátion (+) e um Ânion (-), que se atraem fortemente por forças eletrostáticas.
+                       </p>
+                       <p class="text-sm font-mono text-neon-blue/80 bg-black/30 p-2 rounded-lg inline-block">
+                           Exemplos: Haletos, Óxidos Metálicos (NaCl, CaF₂, MgO)
+                       </p>
+                       <button class="spark-btn ionic-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-blue);">
+                           Ver Propriedades Sólidas
+                       </button>
+                   </div>
+                   <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
+                       <!-- Placeholder Visual: Transferência de elétron -->
+                       <div class="relative w-full h-full flex items-center justify-center">
+                           <div class="text-5xl text-white mr-16" style="text-shadow: 0 0 10px var(--neon-blue);">Na →</div>
+                           <div class="text-5xl text-white ml-16" style="text-shadow: 0 0 10px var(--neon-green);">Cl</div>
+                           <span class="absolute block w-4 h-4 rounded-full bg-neon-blue animate-pulse" style="left: calc(50% - 6rem); top: 50%; animation-delay: 0.5s;"></span>
+                           <span class="absolute block w-2 h-2 rounded-full bg-neon-blue animate-ping" style="left: calc(50% + 6rem); top: 50%; animation-delay: 1s;"></span>
+                       </div>
+                   </div>
+               </div>
+              
+               <!-- Ligação Covalente -->
+               <div id="covalent" class="chem-card covalent-theme p-8 rounded-2xl flex flex-col lg:flex-row-reverse items-center gap-8">
+                   <div class="lg:w-1/2">
+                       <h3 class="text-4xl font-extrabold mb-4 text-neon-green" style="text-shadow: 0 0 10px var(--neon-green);">02. LIGAÇÃO COVALENTE (Molecular)</h3>
+                       <p class="text-gray-300 mb-6 text-lg">
+                           Ocorre primariamente entre não-metais. Ambos os átomos têm alta eletronegatividade, o que leva ao **compartilhamento de pares de elétrons**. Isso cria uma nova órbita molecular onde os elétrons circulam em torno dos dois núcleos, mantendo a molécula unida.
+                       </p>
+                       <p class="text-sm font-mono text-neon-green/80 bg-black/30 p-2 rounded-lg inline-block">
+                           Exemplos: Moléculas Orgânicas, Gases Diatômicos (H₂O, CO₂, C₆H₁₂O₆)
+                       </p>
+                       <button class="spark-btn covalent-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-green);">
+                           Modelar Geometria
+                       </button>
+                   </div>
+                   <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
+                        <!-- Placeholder Visual: Compartilhamento de elétrons -->
                         <div class="relative w-full h-full flex items-center justify-center">
-                            <div class="text-5xl text-white mr-16" style="text-shadow: 0 0 10px var(--neon-blue);">Na →</div>
-                            <div class="text-5xl text-white ml-16" style="text-shadow: 0 0 10px var(--neon-green);">Cl</div>
-                            <span class="absolute block w-4 h-4 rounded-full bg-neon-blue animate-pulse" style="left: calc(50% - 6rem); top: 50%; animation-delay: 0.5s;"></span>
-                            <span class="absolute block w-2 h-2 rounded-full bg-neon-blue animate-ping" style="left: calc(50% + 6rem); top: 50%; animation-delay: 1s;"></span>
+                           <div class="w-24 h-24 rounded-full border-4 border-neon-green/50 absolute -translate-x-8" style="box-shadow: 0 0 10px var(--neon-green);"></div>
+                           <div class="w-24 h-24 rounded-full border-4 border-neon-green/50 absolute translate-x-8" style="box-shadow: 0 0 10px var(--neon-green);"></div>
+                           <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl"></div>
+                           <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl translate-x-1/2"></div>
+                           <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl translate-x-1/4"></div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Ligação Covalente -->
-                <div id="covalent" class="chem-card covalent-theme p-8 rounded-2xl flex flex-col lg:flex-row-reverse items-center gap-8">
-                    <div class="lg:w-1/2">
-                        <h3 class="text-4xl font-extrabold mb-4 text-neon-green" style="text-shadow: 0 0 10px var(--neon-green);">02. LIGAÇÃO COVALENTE (Molecular)</h3>
-                        <p class="text-gray-300 mb-6 text-lg">
-                            Ocorre primariamente entre não-metais. Ambos os átomos têm alta eletronegatividade, o que leva ao **compartilhamento de pares de elétrons**. Isso cria uma nova órbita molecular onde os elétrons circulam em torno dos dois núcleos, mantendo a molécula unida.
-                        </p>
-                        <p class="text-sm font-mono text-neon-green/80 bg-black/30 p-2 rounded-lg inline-block">
-                            Exemplos: Moléculas Orgânicas, Gases Diatômicos (H₂O, CO₂, C₆H₁₂O₆)
-                        </p>
-                        <button class="spark-btn covalent-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-green);">
-                            Modelar Geometria
-                        </button>
-                    </div>
-                    <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
-                         <!-- Placeholder Visual: Compartilhamento de elétrons -->
-                         <div class="relative w-full h-full flex items-center justify-center">
-                            <div class="w-24 h-24 rounded-full border-4 border-neon-green/50 absolute -translate-x-8" style="box-shadow: 0 0 10px var(--neon-green);"></div>
-                            <div class="w-24 h-24 rounded-full border-4 border-neon-green/50 absolute translate-x-8" style="box-shadow: 0 0 10px var(--neon-green);"></div>
-                            <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl"></div>
-                            <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl translate-x-1/2"></div>
-                            <div class="w-4 h-4 rounded-full bg-neon-green absolute flex items-center justify-center text-xs font-bold shadow-neon-green shadow-xl translate-x-1/4"></div>
-                         </div>
-                    </div>
-                </div>
-
-                <!-- Ligação Metálica -->
-                <div id="metallic" class="chem-card metallic-theme p-8 rounded-2xl flex flex-col lg:flex-row items-center gap-8">
-                    <div class="lg:w-1/2">
-                        <h3 class="text-4xl font-extrabold mb-4 text-neon-purple" style="text-shadow: 0 0 10px var(--neon-purple);">03. LIGAÇÃO METÁLICA (Nuvem Eletrônica)</h3>
-                        <p class="text-gray-300 mb-6 text-lg">
-                            Exclusiva para metais. Os átomos de metal perdem facilmente seus elétrons de valência, mas estes não são transferidos para um único receptor; eles se tornam **deslocalizados** e formam um "mar de elétrons" que envolve os cátions metálicos.
-                        </p>
-                        <p class="text-sm font-mono text-neon-purple/80 bg-black/30 p-2 rounded-lg inline-block">
-                            Exemplos: Metais Puros, Ligas Metálicas (Au, Fe, Bronze, Aço)
-                        </p>
-                        <button class="spark-btn metallic-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-purple);">
-                            Entender a Condutividade
-                        </button>
-                    </div>
-                    <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
-                        <!-- Placeholder Visual: Mar de elétrons -->
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            <div class="grid grid-cols-4 grid-rows-4 gap-4 p-4">
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-2xl border-2 border-neon-green/80 shadow-neon-green shadow-sm flex items-center justify-center text-xs font-bold text-white">-</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-2xl border-2 border-neon-green/80 shadow-neon-green shadow-sm flex items-center justify-center text-xs font-bold text-white">-</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                                <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. Desafios e Conclusão -->
-        <section id="challenges" class="py-20 px-4 sm:px-8 lg:px-16 bg-gray-900/50 shadow-inner shadow-green-900/30">
-            <div class="max-w-6xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-6" style="color:var(--neon-purple); text-shadow: 0 0 8px rgba(177, 0, 255, 0.4);">Desafios Interligados</h2>
-                <p class="text-xl mb-12 max-w-4xl mx-auto text-gray-300">
-                    A fronteira entre os tipos de ligação não é sempre absoluta. Ligações covalentes polares, por exemplo, possuem um caráter iônico parcial, criando um espectro de interações que define a complexidade da química.
-                </p>
-                <a href="#faq" class="spark-btn covalent-theme px-8 py-3 rounded-full text-lg font-semibold shadow-xl" style="--neon-color: var(--neon-green);">
-                    Ir para FAQ de Aproximação
-                </a>
-            </div>
-        </section>
-
-        <!-- 5. FAQ Interativo -->
-        <section id="faq" class="py-20 px-4 sm:px-8 lg:px-16">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-4xl font-bold mb-10 text-center text-neon-purple" style="text-shadow: 0 0 5px var(--neon-purple);">FAQ: Centro de Dúvidas</h2>
-                
-                <div class="space-y-4">
-                    <!-- Item 1: Eletronegatividade -->
-                    <div class="faq-item rounded-xl bg-gray-800/80 metallic-theme">
-                        <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
-                            <h4 class="font-semibold text-lg text-white">
-                                O que a Eletronegatividade tem a ver com o tipo de ligação?
-                            </h4>
-                            <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
-                        </div>
-                        <div class="faq-content px-5 sm:px-6">
-                            <p class="text-gray-400 border-l-4 border-neon-purple pl-4 py-2">
-                                A diferença de eletronegatividade (ΔEN) é o principal indicador. Se ΔEN é muito alta (>1.7), a ligação é predominantemente iônica. Se é baixa (0.4 - 1.7), é covalente polar. Se é próxima de zero (<0.4), é covalente apolar.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Item 2: Sólidos Iônicos vs Covalentes -->
-                    <div class="faq-item rounded-xl bg-gray-800/80 covalent-theme">
-                        <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
-                            <h4 class="font-semibold text-lg text-white">
-                                Por que compostos iônicos têm pontos de fusão tão altos?
-                            </h4>
-                            <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
-                        </div>
-                        <div class="faq-content px-5 sm:px-6">
-                            <p class="text-gray-400 border-l-4 border-neon-green pl-4 py-2">
-                                A atração eletrostática entre os íons opostos é extremamente forte e opera em todas as direções (estrutura cristalina). É necessária uma grande quantidade de energia térmica para quebrar essas inúmeras ligações e permitir o movimento (fusão).
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Item 3: Metais e Ligas -->
-                    <div class="faq-item rounded-xl bg-gray-800/80 ionic-theme">
-                        <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
-                            <h4 class="font-semibold text-lg text-white">
-                                Ligas metálicas (como o Bronze) possuem ligações metálicas?
-                            </h4>
-                            <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
-                        </div>
-                        <div class="faq-content px-5 sm:px-6">
-                            <p class="text-gray-400 border-l-4 border-neon-blue pl-4 py-2">
-                                Sim. As ligas são misturas de dois ou mais elementos (sendo pelo menos um um metal) que possuem a mesma estrutura de íons positivos em um mar de elétrons deslocalizados. Isso mantém as propriedades metálicas, como a condutividade e o brilho.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="p-8 text-center text-sm text-gray-600 border-t border-gray-800">
-        Código-fonte 100% em <a href="https://github.com/seuusuario/seurepositorio" class="text-neon-purple hover:underline" style="color:var(--neon-purple);">GitHub</a> | Design Sci-Fi Neon | © 2024
-    </footer>
-
-    <script>
-        // Configurações do Canvas e Partículas (Aprimoradas)
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-        const numParticles = 250; // Aumentado para mais densidade
-        const colors = [
-            getComputedStyle(document.documentElement).getPropertyValue('--neon-purple'),
-            getComputedStyle(document.documentElement).getPropertyValue('--neon-green'),
-            getComputedStyle(document.documentElement).getPropertyValue('--neon-blue')
-        ];
-        
-        // Configurações do Átomo Central (Hero Section)
-        let atom = {
-            x: 0,
-            y: 0,
-            nucleusRadius: 10,
-            orbits: [100, 150, 200], 
-            electrons: [
-                { orbit: 100, angle: 0, speed: 0.02, color: colors[2] }, // Azul
-                { orbit: 100, angle: Math.PI, speed: 0.02, color: colors[2] },
-                
-                { orbit: 150, angle: Math.PI / 2, speed: 0.015, color: colors[1] }, // Verde
-                { orbit: 150, angle: 3 * Math.PI / 2, speed: 0.015, color: colors[1] },
-                
-                { orbit: 200, angle: Math.PI / 4, speed: 0.01, color: colors[0] }, // Roxo
-                { orbit: 200, angle: 5 * Math.PI / 4, speed: 0.01, color: colors[0] }
-            ]
-        };
-
-        function setCanvasDimensions() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        
-        window.addEventListener('resize', setCanvasDimensions);
-        setCanvasDimensions(); // Inicializa as dimensões
-
-        // Classe para as Partículas de Fundo
-        class Particle {
-            constructor(color) {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.radius = Math.random() * 1.5 + 0.5;
-                this.velocity = {
-                    x: (Math.random() - 0.5) * 0.2, // Movimento mais lento
-                    y: (Math.random() - 0.5) * 0.2
-                };
-                this.color = color;
-                this.alpha = Math.random() * 0.4 + 0.1; // Menos opaco
-            }
-
-            update() {
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-
-                if (this.x < 0 || this.x > width) this.velocity.x = -this.velocity.x;
-                if (this.y < 0 || this.y > height) this.velocity.y = -this.velocity.y;
-            }
-
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < numParticles; i++) {
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                particles.push(new Particle(color));
-            }
-        }
-
-        // Desenha o átomo central animado (somente quando a Hero Section está na viewport)
-        function drawAtom() {
-            const heroSection = document.getElementById('hero');
-            const rect = heroSection.getBoundingClientRect();
-            
-            // Só desenha se a Hero Section estiver pelo menos parcialmente na tela
-            if (rect.bottom < 0 || rect.top > height) return;
-
-            // Posição central do átomo
-            atom.x = width / 2;
-            atom.y = rect.top + rect.height / 2;
-
-            // Desenha o Núcleo (Roxo)
-            ctx.fillStyle = colors[0]; 
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = colors[0];
-            ctx.beginPath();
-            ctx.arc(atom.x, atom.y, atom.nucleusRadius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // Desenha as Órbitas e Elétrons
-            atom.orbits.forEach(r => {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'; // Órbitas bem sutis
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.ellipse(atom.x, atom.y, r, r * 0.6, 0, 0, Math.PI * 2); // Órbita elíptica
-                ctx.stroke();
-            });
-
-            atom.electrons.forEach(e => {
-                e.angle += e.speed;
-                const x = atom.x + e.orbit * Math.cos(e.angle);
-                const y = atom.y + e.orbit * 0.6 * Math.sin(e.angle); // Ajuste elíptico
-
-                // Elétron
-                ctx.fillStyle = e.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = e.color;
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
+                   </div>
+               </div>
 
 
-        // Loop de Animação Principal
-        function animate() {
-            // Limpa o canvas com o fundo escuro, criando um leve efeito de trilha
-            ctx.fillStyle = 'rgba(5, 1, 11, 0.6)'; 
-            ctx.fillRect(0, 0, width, height);
+               <!-- Ligação Metálica -->
+               <div id="metallic" class="chem-card metallic-theme p-8 rounded-2xl flex flex-col lg:flex-row items-center gap-8">
+                   <div class="lg:w-1/2">
+                       <h3 class="text-4xl font-extrabold mb-4 text-neon-purple" style="text-shadow: 0 0 10px var(--neon-purple);">03. LIGAÇÃO METÁLICA (Nuvem Eletrônica)</h3>
+                       <p class="text-gray-300 mb-6 text-lg">
+                           Exclusiva para metais. Os átomos de metal perdem facilmente seus elétrons de valência, mas estes não são transferidos para um único receptor; eles se tornam **deslocalizados** e formam um "mar de elétrons" que envolve os cátions metálicos.
+                       </p>
+                       <p class="text-sm font-mono text-neon-purple/80 bg-black/30 p-2 rounded-lg inline-block">
+                           Exemplos: Metais Puros, Ligas Metálicas (Au, Fe, Bronze, Aço)
+                       </p>
+                       <button class="spark-btn metallic-theme mt-6 px-6 py-2 rounded-full font-bold" style="--neon-color: var(--neon-purple);">
+                           Entender a Condutividade
+                       </button>
+                   </div>
+                   <div class="lg:w-1/2 flex justify-center items-center h-48 relative">
+                       <!-- Placeholder Visual: Mar de elétrons -->
+                       <div class="relative w-full h-full flex items-center justify-center">
+                           <div class="grid grid-cols-4 grid-rows-4 gap-4 p-4">
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-2xl border-2 border-neon-green/80 shadow-neon-green shadow-sm flex items-center justify-center text-xs font-bold text-white">-</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-2xl border-2 border-neon-green/80 shadow-neon-green shadow-sm flex items-center justify-center text-xs font-bold text-white">-</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                               <div class="w-4 h-4 bg-purple-700/50 rounded-full border-2 border-neon-purple/80 shadow-neon-purple shadow-sm flex items-center justify-center text-xs font-bold text-white">+</div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </section>
 
-            // 1. Atualiza e desenha partículas de fundo
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
 
-            // 2. Desenha o Átomo Animado 
-            drawAtom();
-
-            requestAnimationFrame(animate);
-        }
-
-        // Inicia
-        initParticles();
-        animate();
+       <!-- 4. Desafios e Conclusão -->
+       <section id="challenges" class="py-20 px-4 sm:px-8 lg:px-16 bg-gray-900/50 shadow-inner shadow-green-900/30">
+           <div class="max-w-6xl mx-auto text-center">
+               <h2 class="text-4xl font-bold mb-6" style="color:var(--neon-purple); text-shadow: 0 0 8px rgba(177, 0, 255, 0.4);">Desafios Interligados</h2>
+               <p class="text-xl mb-12 max-w-4xl mx-auto text-gray-300">
+                   A fronteira entre os tipos de ligação não é sempre absoluta. Ligações covalentes polares, por exemplo, possuem um caráter iônico parcial, criando um espectro de interações que define a complexidade da química.
+               </p>
+               <a href="#faq" class="spark-btn covalent-theme px-8 py-3 rounded-full text-lg font-semibold shadow-xl" style="--neon-color: var(--neon-green);">
+                   Ir para FAQ de Aproximação
+               </a>
+           </div>
+       </section>
 
 
-        // ----------------------------------------------------------------------
-        // Funcionalidades Interativas (JavaScript DOM)
-        // ----------------------------------------------------------------------
+       <!-- 5. FAQ Interativo -->
+       <section id="faq" class="py-20 px-4 sm:px-8 lg:px-16">
+           <div class="max-w-4xl mx-auto">
+               <h2 class="text-4xl font-bold mb-10 text-center text-neon-purple" style="text-shadow: 0 0 5px var(--neon-purple);">FAQ: Centro de Dúvidas</h2>
+              
+               <div class="space-y-4">
+                   <!-- Item 1: Eletronegatividade -->
+                   <div class="faq-item rounded-xl bg-gray-800/80 metallic-theme">
+                       <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
+                           <h4 class="font-semibold text-lg text-white">
+                               O que a Eletronegatividade tem a ver com o tipo de ligação?
+                           </h4>
+                           <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
+                       </div>
+                       <div class="faq-content px-5 sm:px-6">
+                           <p class="text-gray-400 border-l-4 border-neon-purple pl-4 py-2">
+                               A diferença de eletronegatividade (ΔEN) é o principal indicador. Se ΔEN é muito alta (>1.7), a ligação é predominantemente iônica. Se é baixa (0.4 - 1.7), é covalente polar. Se é próxima de zero (<0.4), é covalente apolar.
+                           </p>
+                       </div>
+                   </div>
+                  
+                   <!-- Item 2: Sólidos Iônicos vs Covalentes -->
+                   <div class="faq-item rounded-xl bg-gray-800/80 covalent-theme">
+                       <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
+                           <h4 class="font-semibold text-lg text-white">
+                               Por que compostos iônicos têm pontos de fusão tão altos?
+                           </h4>
+                           <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
+                       </div>
+                       <div class="faq-content px-5 sm:px-6">
+                           <p class="text-gray-400 border-l-4 border-neon-green pl-4 py-2">
+                               A atração eletrostática entre os íons opostos é extremamente forte e opera em todas as direções (estrutura cristalina). É necessária uma grande quantidade de energia térmica para quebrar essas inúmeras ligações e permitir o movimento (fusão).
+                           </p>
+                       </div>
+                   </div>
+                  
+                   <!-- Item 3: Metais e Ligas -->
+                   <div class="faq-item rounded-xl bg-gray-800/80 ionic-theme">
+                       <div class="faq-header flex justify-between items-center p-5 sm:p-6 rounded-lg">
+                           <h4 class="font-semibold text-lg text-white">
+                               Ligas metálicas (como o Bronze) possuem ligações metálicas?
+                           </h4>
+                           <span class="plus-icon text-2xl font-bold text-gray-500 ml-4">+</span>
+                       </div>
+                       <div class="faq-content px-5 sm:px-6">
+                           <p class="text-gray-400 border-l-4 border-neon-blue pl-4 py-2">
+                               Sim. As ligas são misturas de dois ou mais elementos (sendo pelo menos um um metal) que possuem a mesma estrutura de íons positivos em um mar de elétrons deslocalizados. Isso mantém as propriedades metálicas, como a condutividade e o brilho.
+                           </p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </section>
 
-        // 1. FAQ Accordion
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.querySelector('.faq-header').addEventListener('click', () => {
-                const isOpen = item.classList.contains('faq-open');
-                
-                // Fecha todos os outros
-                document.querySelectorAll('.faq-item').forEach(el => {
-                    el.classList.remove('faq-open');
-                });
 
-                // Abre ou fecha o clicado
-                if (!isOpen) {
-                    item.classList.add('faq-open');
-                }
-            });
-        });
+   </main>
 
-        // 2. Navegação de Rolagem Suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                if (targetElement) {
-                     // Calcula a posição do topo (subtraindo a altura da nav-bar fixa)
-                    const navHeight = document.querySelector('nav').offsetHeight;
-                    const offsetTop = targetElement.offsetTop - navHeight;
-                    
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
 
-    </script>
+   <footer class="p-8 text-center text-sm text-gray-600 border-t border-gray-800">
+       Código-fonte 100% em <a href="https://github.com/seuusuario/seurepositorio" class="text-neon-purple hover:underline" style="color:var(--neon-purple);">GitHub</a> | Design Sci-Fi Neon | © 2024
+   </footer>
+
+
+   <script>
+       // Configurações do Canvas e Partículas (Aprimoradas)
+       const canvas = document.getElementById('particle-canvas');
+       const ctx = canvas.getContext('2d');
+       let width, height;
+       let particles = [];
+       const numParticles = 250; // Aumentado para mais densidade
+       const colors = [
+           getComputedStyle(document.documentElement).getPropertyValue('--neon-purple'),
+           getComputedStyle(document.documentElement).getPropertyValue('--neon-green'),
+           getComputedStyle(document.documentElement).getPropertyValue('--neon-blue')
+       ];
+      
+       // Configurações do Átomo Central (Hero Section)
+       let atom = {
+           x: 0,
+           y: 0,
+           nucleusRadius: 10,
+           orbits: [100, 150, 200],
+           electrons: [
+               { orbit: 100, angle: 0, speed: 0.02, color: colors[2] }, // Azul
+               { orbit: 100, angle: Math.PI, speed: 0.02, color: colors[2] },
+              
+               { orbit: 150, angle: Math.PI / 2, speed: 0.015, color: colors[1] }, // Verde
+               { orbit: 150, angle: 3 * Math.PI / 2, speed: 0.015, color: colors[1] },
+              
+               { orbit: 200, angle: Math.PI / 4, speed: 0.01, color: colors[0] }, // Roxo
+               { orbit: 200, angle: 5 * Math.PI / 4, speed: 0.01, color: colors[0] }
+           ]
+       };
+
+
+       function setCanvasDimensions() {
+           width = canvas.width = window.innerWidth;
+           height = canvas.height = window.innerHeight;
+       }
+      
+       window.addEventListener('resize', setCanvasDimensions);
+       setCanvasDimensions(); // Inicializa as dimensões
+
+
+       // Classe para as Partículas de Fundo
+       class Particle {
+           constructor(color) {
+               this.x = Math.random() * width;
+               this.y = Math.random() * height;
+               this.radius = Math.random() * 1.5 + 0.5;
+               this.velocity = {
+                   x: (Math.random() - 0.5) * 0.2, // Movimento mais lento
+                   y: (Math.random() - 0.5) * 0.2
+               };
+               this.color = color;
+               this.alpha = Math.random() * 0.4 + 0.1; // Menos opaco
+           }
+
+
+           update() {
+               this.x += this.velocity.x;
+               this.y += this.velocity.y;
+
+
+               if (this.x < 0 || this.x > width) this.velocity.x = -this.velocity.x;
+               if (this.y < 0 || this.y > height) this.velocity.y = -this.velocity.y;
+           }
+
+
+           draw() {
+               ctx.save();
+               ctx.globalAlpha = this.alpha;
+               ctx.fillStyle = this.color;
+               ctx.shadowBlur = 5;
+               ctx.shadowColor = this.color;
+               ctx.beginPath();
+               ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+               ctx.fill();
+               ctx.restore();
+           }
+       }
+
+
+       function initParticles() {
+           particles = [];
+           for (let i = 0; i < numParticles; i++) {
+               const color = colors[Math.floor(Math.random() * colors.length)];
+               particles.push(new Particle(color));
+           }
+       }
+
+
+       // Desenha o átomo central animado (somente quando a Hero Section está na viewport)
+       function drawAtom() {
+           const heroSection = document.getElementById('hero');
+           const rect = heroSection.getBoundingClientRect();
+          
+           // Só desenha se a Hero Section estiver pelo menos parcialmente na tela
+           if (rect.bottom < 0 || rect.top > height) return;
+
+
+           // Posição central do átomo
+           atom.x = width / 2;
+           atom.y = rect.top + rect.height / 2;
+
+
+           // Desenha o Núcleo (Roxo)
+           ctx.fillStyle = colors[0];
+           ctx.shadowBlur = 20;
+           ctx.shadowColor = colors[0];
+           ctx.beginPath();
+           ctx.arc(atom.x, atom.y, atom.nucleusRadius, 0, Math.PI * 2);
+           ctx.fill();
+           ctx.shadowBlur = 0;
+
+
+           // Desenha as Órbitas e Elétrons
+           atom.orbits.forEach(r => {
+               ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'; // Órbitas bem sutis
+               ctx.lineWidth = 1.5;
+               ctx.beginPath();
+               ctx.ellipse(atom.x, atom.y, r, r * 0.6, 0, 0, Math.PI * 2); // Órbita elíptica
+               ctx.stroke();
+           });
+
+
+           atom.electrons.forEach(e => {
+               e.angle += e.speed;
+               const x = atom.x + e.orbit * Math.cos(e.angle);
+               const y = atom.y + e.orbit * 0.6 * Math.sin(e.angle); // Ajuste elíptico
+
+
+               // Elétron
+               ctx.fillStyle = e.color;
+               ctx.shadowBlur = 10;
+               ctx.shadowColor = e.color;
+               ctx.beginPath();
+               ctx.arc(x, y, 4, 0, Math.PI * 2);
+               ctx.fill();
+           });
+       }
+
+
+
+
+       // Loop de Animação Principal
+       function animate() {
+           // Limpa o canvas com o fundo escuro, criando um leve efeito de trilha
+           ctx.fillStyle = 'rgba(5, 1, 11, 0.6)';
+           ctx.fillRect(0, 0, width, height);
+
+
+           // 1. Atualiza e desenha partículas de fundo
+           particles.forEach(p => {
+               p.update();
+               p.draw();
+           });
+
+
+           // 2. Desenha o Átomo Animado
+           drawAtom();
+
+
+           requestAnimationFrame(animate);
+       }
+
+
+       // Inicia
+       initParticles();
+       animate();
+
+
+
+
+       // ----------------------------------------------------------------------
+       // Funcionalidades Interativas (JavaScript DOM)
+       // ----------------------------------------------------------------------
+
+
+       // 1. FAQ Accordion
+       document.querySelectorAll('.faq-item').forEach(item => {
+           item.querySelector('.faq-header').addEventListener('click', () => {
+               const isOpen = item.classList.contains('faq-open');
+              
+               // Fecha todos os outros
+               document.querySelectorAll('.faq-item').forEach(el => {
+                   el.classList.remove('faq-open');
+               });
+
+
+               // Abre ou fecha o clicado
+               if (!isOpen) {
+                   item.classList.add('faq-open');
+               }
+           });
+       });
+
+
+       // 2. Navegação de Rolagem Suave
+       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+           anchor.addEventListener('click', function (e) {
+               e.preventDefault();
+               const targetId = this.getAttribute('href');
+               const targetElement = document.querySelector(targetId);
+              
+               if (targetElement) {
+                    // Calcula a posição do topo (subtraindo a altura da nav-bar fixa)
+                   const navHeight = document.querySelector('nav').offsetHeight;
+                   const offsetTop = targetElement.offsetTop - navHeight;
+                  
+                   window.scrollTo({
+                       top: offsetTop,
+                       behavior: 'smooth'
+                   });
+               }
+           });
+       });
+
+
+   </script>
 </body>
 </html>
+
+

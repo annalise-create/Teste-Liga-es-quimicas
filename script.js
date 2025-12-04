@@ -1,109 +1,128 @@
-// Configura canvas full screen
-const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
-const ctx = canvas.getContext('2d');
+/*
+ * Arquivo: script.js
+ * Função: Contém a lógica JavaScript para interagir com a API Gemini e manipular a interface.
+ */
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// ----------------------------------------------------------------------
+// CONFIGURAÇÕES DA API GEMINI
+// ----------------------------------------------------------------------
+const apiKey = ""; // Deixe em branco; o ambiente Canvas fornece a chave em tempo de execução.
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-// Atualiza tamanho do canvas ao redimensionar
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+// ----------------------------------------------------------------------
+// ELEMENTOS DA DOM
+// ----------------------------------------------------------------------
+const promptInput = document.getElementById('promptInput');
+const generateButton = document.getElementById('generateButton');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const outputContainer = document.getElementById('outputContainer');
+const responseText = document.getElementById('responseText');
+const messageBox = document.getElementById('messageBox');
 
-// ---------------------------
-// CONFIGURAÇÃO DAS PARTÍCULAS
-// ---------------------------
-const particles = [];
-const particleCount = 150;
+// ----------------------------------------------------------------------
+// FUNÇÕES DE UTILIDADE
+// ----------------------------------------------------------------------
 
-for (let i = 0; i < particleCount; i++) {
-    particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        color: `hsl(${Math.random()*360}, 100%, 50%)`,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5
-    });
+/**
+ * Exibe mensagens de erro ou sucesso para o usuário.
+ * @param {string} message - A mensagem a ser exibida.
+ * @param {string} type - 'error' ou 'success'.
+ */
+function showMessage(message, type = 'error') {
+    messageBox.textContent = message;
+    messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+    
+    // Remove classes anteriores e aplica as novas classes Tailwind
+    if (type === 'error') {
+        // Classes para erro (vermelho)
+        messageBox.classList.add('bg-red-100', 'text-red-800', 'border-red-400');
+        messageBox.classList.remove('bg-green-100', 'text-green-800', 'border-green-400');
+    } else if (type === 'success') {
+        // Classes para sucesso (verde)
+        messageBox.classList.add('bg-green-100', 'text-green-800', 'border-green-400');
+        messageBox.classList.remove('bg-red-100', 'text-red-800', 'border-red-400');
+    }
+    
+    messageBox.classList.remove('hidden');
 }
 
-// ---------------------------
-// CONFIGURAÇÃO DOS ORBITAIS
-// ---------------------------
-const orbitals = [
-    { radius: 60, speed: 0.02, angle: Math.random() * Math.PI*2 },
-    { radius: 100, speed: -0.015, angle: Math.random() * Math.PI*2 },
-    { radius: 140, speed: 0.01, angle: Math.random() * Math.PI*2 }
-];
+// ----------------------------------------------------------------------
+// LÓGICA PRINCIPAL DA API
+// ----------------------------------------------------------------------
 
-// ---------------------------
-// FUNÇÃO DE DESENHO
-// ---------------------------
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+async function generateText() {
+    const userQuery = promptInput.value.trim();
 
-    // Fundo escuro semi-transparente para efeito glow
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!userQuery) {
+        showMessage("Por favor, digite um prompt para gerar o texto.");
+        return;
+    }
 
-    // Desenhar partículas neon
-    particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
+    // 1. Configurar o estado de carregamento
+    responseText.textContent = '';
+    outputContainer.classList.add('hidden');
+    messageBox.classList.add('hidden');
+    loadingIndicator.classList.remove('hidden');
+    generateButton.disabled = true;
 
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+    };
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-        ctx.closePath();
-    });
+    // 2. Tentar chamar a API com Backoff Exponencial
+    const maxRetries = 5;
+    let currentRetry = 0;
 
-    // Desenhar núcleo central
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    while (currentRetry < maxRetries) {
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 20, 0, Math.PI*2);
-    ctx.fillStyle = '#A7FF1A'; // neon lime
-    ctx.shadowBlur = 30;
-    ctx.shadowColor = '#A7FF1A';
-    ctx.fill();
-    ctx.closePath();
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(`Erro API ${response.status}: ${errorBody.error?.message || response.statusText}`);
+            }
 
-    // Desenhar orbitais e elétrons
-    orbitals.forEach(o => {
-        o.angle += o.speed;
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
-        // Traço do orbital
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, o.radius, 0, Math.PI*2);
-        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.closePath();
+            // 3. Processar o resultado
+            if (text) {
+                responseText.textContent = text;
+                outputContainer.classList.remove('hidden');
+                showMessage("Geração concluída com sucesso!", 'success');
+            } else {
+                showMessage("A IA não retornou um texto. Tente reformular seu prompt.");
+            }
+            
+            // Sucesso, sair do loop
+            break; 
 
-        // Elétron
-        const electronX = centerX + o.radius * Math.cos(o.angle);
-        const electronY = centerY + o.radius * Math.sin(o.angle);
+        } catch (error) {
+            console.error("Erro na geração de texto:", error);
+            
+            if (currentRetry < maxRetries - 1) {
+                // Se não for o último retry, espera e tenta novamente
+                const delay = Math.pow(2, currentRetry) * 1000; 
+                await new Promise(resolve => setTimeout(resolve, delay));
+                currentRetry++;
+            } else {
+                // Último retry falhou
+                showMessage(`Falha ao conectar ou gerar texto após ${maxRetries} tentativas. Verifique o console para mais detalhes.`);
+                break;
+            }
+        }
+    }
 
-        ctx.beginPath();
-        ctx.arc(electronX, electronY, 6, 0, Math.PI*2);
-        ctx.fillStyle = '#00F0FF'; // neon cyan
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#00F0FF';
-        ctx.fill();
-        ctx.closePath();
-    });
-
-    requestAnimationFrame(animate);
+    // 4. Limpar o estado de carregamento
+    loadingIndicator.classList.add('hidden');
+    generateButton.disabled = false;
 }
 
-// Iniciar animação
-animate();
+// ----------------------------------------------------------------------
+// INICIALIZAÇÃO
+// ----------------------------------------------------------------------
+generateButton.addEventListener('click', generateText);
