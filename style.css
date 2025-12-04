@@ -1,0 +1,149 @@
+/* ---------- CONFIGURAÇÃO GERAL ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Seções */
+.section {
+    padding: 80px 10%;
+}
+
+.section.light {
+    background: #ffffff;
+    color: #0f0f0f;
+}
+
+.section.dark {
+    background: #0A0218;
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+    background: linear-gradient(180deg, #0A0218, #000000);
+    text-align: center;
+    padding: 120px 10%;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #A7FF1A; /* Lime Neon */
+    text-shadow: 0 0 20px #A7FF1A;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+/* ATOMO ANIMADO (decorativo) */
+.hero-atom {
+    width: 250px;
+    height: 250px;
+    margin: 40px auto 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    position: relative;
+    animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- CARDS ---------- */
+
+.cards-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 300px;
+    padding: 30px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+/* -- Cores por tipo de ligação -- */
+
+.card.ionic {
+    border-color: #5f5cff;
+    box-shadow: 0 0 20px #5f5cff80;
+}
+
+.card.covalent {
+    border-color: #A7FF1A;
+    box-shadow: 0 0 20px #A7FF1A80;
+}
+
+.card.metallic {
+    border-color: #FFD400;
+    box-shadow: 0 0 20px #FFD40080;
+}
+
+/* ---------- TABELA ---------- */
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 15px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+/* ---------- FAQ ---------- */
+
+.faq-item {
+    margin-bottom: 20px;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    background: #15002e;
+    color: #A7FF1A;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.faq-answer {
+    display: none;
+    padding: 15px;
+    background: #0d001a;
+    margin-top: 5px;
+    border-radius: 10px;
+}
+
+/* ---------- FIM ---------- */
